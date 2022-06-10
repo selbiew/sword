@@ -32,7 +32,10 @@ fun ShapeRenderer.draw(lineToDraw: Line, camera: Camera, color: Color = Color.BL
     val currentColor = getColor()
     setColor(color)
     use(ShapeRenderer.ShapeType.Line, camera) {
-        line(lineToDraw, camera)
+        rectLine(lineToDraw, camera)
+    }
+    use(ShapeRenderer.ShapeType.Filled, camera) {
+        rectLine(lineToDraw.start, lineToDraw.current(), camera, 3f)
     }
     setColor(currentColor)
 }
@@ -42,4 +45,16 @@ fun ShapeRenderer.line(lineToDraw: Line, camera: Camera) {
     val startUnprojected = camera.unproject(Vector3(lineToDraw.start.x, lineToDraw.start.y, 1f))
     val endUnprojected = camera.unproject(Vector3(lineToDraw.end.x, lineToDraw.end.y, 1f))
     line(startUnprojected, endUnprojected)
+}
+
+fun ShapeRenderer.rectLine(start: Vector2, end: Vector2, camera: Camera, width: Float = 5f) {
+    val startUnprojected = camera.unproject(Vector3(start.x, start.y, 1f))
+    val endUnprojected = camera.unproject(Vector3(end.x, end.y, 1f))
+    rectLine(startUnprojected.x, startUnprojected.y, endUnprojected.x, endUnprojected.y, width)
+}
+
+fun ShapeRenderer.rectLine(lineToDraw: Line, camera: Camera, width: Float = 5f) {
+    val startUnprojected = camera.unproject(Vector3(lineToDraw.start.x, lineToDraw.start.y, 1f))
+    val endUnprojected = camera.unproject(Vector3(lineToDraw.end.x, lineToDraw.end.y, 1f))
+    rectLine(startUnprojected.x, startUnprojected.y, endUnprojected.x, endUnprojected.y, width)
 }

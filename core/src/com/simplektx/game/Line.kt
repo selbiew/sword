@@ -7,10 +7,16 @@ import kotlin.math.min
 class Line(val start: Vector2, val end: Vector2) {
     private val durationMs: Long = 1000
     var timeRemainingMs: Long = durationMs
+    val timeElapsedMs: Long get() = durationMs - timeRemainingMs
+    val fractionComplete: Float get() = (timeElapsedMs.toFloat() / durationMs.toFloat())
 
     fun update(delta: Float) {
         val deltaMs = (delta * 1000).toLong()
         timeRemainingMs -= deltaMs
+    }
+
+    fun current(): Vector2 {
+        return start.cpy().add(end.cpy().sub(start.cpy()).scl(fractionComplete))
     }
 
     // Given three collinear points p, q, r, the function checks if
