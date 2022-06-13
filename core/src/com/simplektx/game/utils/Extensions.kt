@@ -35,7 +35,7 @@ fun ShapeRenderer.draw(lineToDraw: Line, camera: Camera, color: Color = Color.BL
         rectLine(lineToDraw, camera)
     }
     use(ShapeRenderer.ShapeType.Filled, camera) {
-        rectLine(lineToDraw.start, lineToDraw.current(), camera, 3f)
+        rectLine(lineToDraw.start, lineToDraw.current, camera, 3f)
     }
     setColor(currentColor)
 }
