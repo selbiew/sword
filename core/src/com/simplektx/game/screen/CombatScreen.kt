@@ -10,11 +10,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.ScreenUtils
 import com.simplektx.game.Line
 import com.simplektx.game.enemy.AttackGenerator
+import com.simplektx.game.entity.Enemy
+import com.simplektx.game.entity.Player
 import com.simplektx.game.input.CombatInputProcessor
+import com.simplektx.game.minigame.CombatMinigame
 import com.simplektx.game.utils.draw
 import ktx.graphics.use
 
 class CombatScreen : Screen {
+    private lateinit var combatMinigame: CombatMinigame
     private lateinit var combatInputProcessor: CombatInputProcessor
     private lateinit var camera: OrthographicCamera
     private lateinit var shapeRenderer: ShapeRenderer
@@ -25,7 +29,8 @@ class CombatScreen : Screen {
 
     override fun show() {
         if (!isInitialized) {
-            combatInputProcessor = CombatInputProcessor()
+            combatMinigame = CombatMinigame(Player(), Enemy())
+            combatInputProcessor = CombatInputProcessor(combatMinigame)
             Gdx.input.inputProcessor = combatInputProcessor
 
             camera = OrthographicCamera()
@@ -34,34 +39,36 @@ class CombatScreen : Screen {
             shapeRenderer = ShapeRenderer()
             spriteBatch = SpriteBatch()
             bitmapFont = BitmapFont()
+            isInitialized = true
         }
     }
 
     override fun render(delta: Float) {
         ScreenUtils.clear(1f, 1f, 1f, 1f)
         camera.update()
+        combatMinigame.update((delta * 1000).toLong())
+        shapeRenderer.draw(combatMinigame.playerAction, camera)
+//        attackGenerator.update(delta)
+//        attackGenerator.lines.forEach {it.update(delta)}
+//        attackGenerator.lines.removeAll {it.timeRemainingMs <= 0}
+//        combatInputProcessor.lines.forEach { it.update(delta) }
+//        combatInputProcessor.lines.removeAll { it.timeRemainingMs <= 0 }
+//
+//        attackGenerator.lines.forEach { shapeRenderer.draw(it, camera, Color.RED) }
+//        combatInputProcessor.lines.forEach { shapeRenderer.draw(it, camera) }
 
-        attackGenerator.update(delta)
-        attackGenerator.lines.forEach {it.update(delta)}
-        attackGenerator.lines.removeAll {it.timeRemainingMs <= 0}
-        combatInputProcessor.lines.forEach { it.update(delta) }
-        combatInputProcessor.lines.removeAll { it.timeRemainingMs <= 0 }
-
-        attackGenerator.lines.forEach { shapeRenderer.draw(it, camera, Color.RED) }
-        combatInputProcessor.lines.forEach { shapeRenderer.draw(it, camera) }
-
-        spriteBatch.use {
-            when (blockedAttack(attackGenerator.lines, combatInputProcessor.lines)) {
-                BlockType.HIT -> {
-                    bitmapFont.color = Color.GREEN
-                    bitmapFont.draw(spriteBatch, "Nice!", 700f, 700f)
-                }
-                BlockType.MISS -> {
-                    bitmapFont.color = Color.RED
-                    bitmapFont.draw(spriteBatch, "BAD!!!", 700f, 700f)
-                }
-            }
-        }
+//        spriteBatch.use {
+//            when (blockedAttack(attackGenerator.lines, combatInputProcessor.lines)) {
+//                BlockType.HIT -> {
+//                    bitmapFont.color = Color.GREEN
+//                    bitmapFont.draw(spriteBatch, "Nice!", 700f, 700f)
+//                }
+//                BlockType.MISS -> {
+//                    bitmapFont.color = Color.RED
+//                    bitmapFont.draw(spriteBatch, "BAD!!!", 700f, 700f)
+//                }
+//            }
+//        }
     }
 
     override fun resize(width: Int, height: Int) {

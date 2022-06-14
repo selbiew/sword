@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.simplektx.game.Line
+import com.simplektx.game.minigame.Action
+import com.simplektx.game.minigame.Swing
 import ktx.graphics.use
 import kotlin.math.abs
 
@@ -28,14 +30,23 @@ fun SpriteBatch.draw(texture: Texture) {
     this.draw(texture, texture.width.toFloat(), texture.height.toFloat())
 }
 
-fun ShapeRenderer.draw(lineToDraw: Line, camera: Camera, color: Color = Color.BLACK) {
+fun ShapeRenderer.draw(action: Action?, camera: Camera, color: Color = Color.BLACK) {
+    when (action) {
+        is Swing -> draw(action, camera, color)
+    }
+}
+
+fun ShapeRenderer.draw(swing: Swing, camera: Camera, color: Color = Color.BLACK) {
     val currentColor = getColor()
     setColor(color)
     use(ShapeRenderer.ShapeType.Line, camera) {
-        rectLine(lineToDraw, camera)
+        rectLine(swing.start, swing.end, camera)
     }
+    println("exectionTimeMs: ${swing.executionTimeMs}")
+    println("swing.executionProgress: ${swing.executionProgress}")
+    println("swing.current: ${swing.current}")
     use(ShapeRenderer.ShapeType.Filled, camera) {
-        rectLine(lineToDraw.start, lineToDraw.current, camera, 3f)
+        rectLine(swing.start, swing.current, camera, 3f)
     }
     setColor(currentColor)
 }
@@ -50,11 +61,5 @@ fun ShapeRenderer.line(lineToDraw: Line, camera: Camera) {
 fun ShapeRenderer.rectLine(start: Vector2, end: Vector2, camera: Camera, width: Float = 5f) {
     val startUnprojected = camera.unproject(Vector3(start.x, start.y, 1f))
     val endUnprojected = camera.unproject(Vector3(end.x, end.y, 1f))
-    rectLine(startUnprojected.x, startUnprojected.y, endUnprojected.x, endUnprojected.y, width)
-}
-
-fun ShapeRenderer.rectLine(lineToDraw: Line, camera: Camera, width: Float = 5f) {
-    val startUnprojected = camera.unproject(Vector3(lineToDraw.start.x, lineToDraw.start.y, 1f))
-    val endUnprojected = camera.unproject(Vector3(lineToDraw.end.x, lineToDraw.end.y, 1f))
     rectLine(startUnprojected.x, startUnprojected.y, endUnprojected.x, endUnprojected.y, width)
 }
