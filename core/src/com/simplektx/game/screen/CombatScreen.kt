@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.ScreenUtils
 import com.simplektx.game.Line
-import com.simplektx.game.enemy.AttackGenerator
 import com.simplektx.game.entity.Enemy
 import com.simplektx.game.entity.Player
 import com.simplektx.game.input.CombatInputProcessor
@@ -24,7 +23,6 @@ class CombatScreen : Screen {
     private lateinit var shapeRenderer: ShapeRenderer
     private lateinit var bitmapFont: BitmapFont
     private lateinit var spriteBatch: SpriteBatch
-    private var attackGenerator: AttackGenerator = AttackGenerator()
     private var isInitialized: Boolean = false
 
     override fun show() {
@@ -48,6 +46,7 @@ class CombatScreen : Screen {
         camera.update()
         combatMinigame.update((delta * 1000).toLong())
         shapeRenderer.draw(combatMinigame.playerAction, camera)
+        shapeRenderer.draw(combatMinigame.enemyAction, camera)
 //        attackGenerator.update(delta)
 //        attackGenerator.lines.forEach {it.update(delta)}
 //        attackGenerator.lines.removeAll {it.timeRemainingMs <= 0}

@@ -9,8 +9,9 @@ class CombatMinigame(val player: Player, val enemy: Enemy) {
     var enemyAction: Action? = null
 
     fun update(deltaMs: Long) {
+        enemy.update(deltaMs)
+        enemyAction = enemy.action
         playerAction?.update(deltaMs)
-        enemyAction?.update(deltaMs)
     }
 
     fun receive(combatInput: CombatInput) {
@@ -19,9 +20,5 @@ class CombatMinigame(val player: Player, val enemy: Enemy) {
                 playerAction = player.swing(combatInput)
             }
         }
-    }
-
-    fun receive(action: Action) {
-        enemyAction = action
     }
 }

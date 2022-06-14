@@ -34,11 +34,8 @@ abstract class Attack(
 
     fun prepare(deltaMs: Long) {
         var deltaRemainderMs = abs(min(0, prepTimeRemainingMs - deltaMs))
-        println("deltaRemainderMs: $deltaRemainderMs")
         prepTimeRemainingMs =  max(0, prepTimeRemainingMs - deltaMs)
-        println("prepTimeRemaining: $prepTimeRemainingMs")
         if (prepTimeRemainingMs == 0L) {
-            println("Switching to execution")
             actionState = ActionState.EXECUTING
             execute(deltaRemainderMs)
         }
@@ -47,9 +44,7 @@ abstract class Attack(
     fun execute(deltaMs: Long) {
 //        var deltaRemainderMs = abs(min(0, executionTimeRemainingMs - deltaMs))
         executionTimeRemainingMs =  max(0, executionTimeRemainingMs - deltaMs)
-        println("executionTimeRemainingMs: $executionTimeRemainingMs")
         if (executionTimeRemainingMs == 0L) {
-            println("Switching to finished")
             actionState = ActionState.FINISHED
         }
     }
