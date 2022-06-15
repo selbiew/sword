@@ -4,12 +4,14 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.simplektx.game.Line
 import com.simplektx.game.minigame.Action
+import com.simplektx.game.minigame.Interaction
 import com.simplektx.game.minigame.Swing
 import ktx.graphics.use
 import kotlin.math.abs
@@ -30,6 +32,19 @@ fun SpriteBatch.draw(texture: Texture) {
     this.draw(texture, texture.width.toFloat(), texture.height.toFloat())
 }
 
+fun SpriteBatch.write(interactions: List<Interaction>, bitmapFont: BitmapFont = BitmapFont()) {
+    use {
+        interactions.forEach {bitmapFont.draw(this, it.displayText, it.position.x, it.position.y)}
+    }
+}
+
+fun SpriteBatch.write(text: String, bitmapFont: BitmapFont, position: Vector2, color: Color = Color.BLACK) {
+    bitmapFont.color = color
+    use {
+        bitmapFont.draw(this, text, position.x, position.y)
+    }
+}
+
 fun ShapeRenderer.draw(action: Action?, camera: Camera, color: Color = Color.BLACK) {
     when (action) {
         is Swing -> draw(action, camera, color)
@@ -42,9 +57,9 @@ fun ShapeRenderer.draw(swing: Swing, camera: Camera, color: Color = Color.BLACK)
     use(ShapeRenderer.ShapeType.Line, camera) {
         rectLine(swing.start, swing.end, camera)
     }
-    println("exectionTimeMs: ${swing.executionTimeMs}")
-    println("swing.executionProgress: ${swing.executionProgress}")
-    println("swing.current: ${swing.current}")
+//    println("exectionTimeMs: ${swing.executionTimeMs}")
+//    println("swing.executionProgress: ${swing.executionProgress}")
+//    println("swing.current: ${swing.current}")
     use(ShapeRenderer.ShapeType.Filled, camera) {
         rectLine(swing.start, swing.current, camera, 3f)
     }

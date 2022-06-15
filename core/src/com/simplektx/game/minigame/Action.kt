@@ -1,11 +1,12 @@
 package com.simplektx.game.minigame
 
 abstract class Action {
-    var actionState: ActionState = ActionState.PREPARING
-    val isPreparing: Boolean get() = actionState == ActionState.PREPARING
-    val isExecuting: Boolean get() = actionState == ActionState.EXECUTING
-    val isFinished: Boolean get() = actionState == ActionState.FINISHED
+    var state: ActionState = ActionState.PREPARING
+    val isPreparing: Boolean get() = state == ActionState.PREPARING
+    val isExecuting: Boolean get() = state == ActionState.EXECUTING
+    val isFinished: Boolean get() = state == ActionState.FINISHED
     abstract fun update(deltaMs: Long)
+    abstract fun interact(other: Action): Interaction
 }
 
 enum class ActionState {

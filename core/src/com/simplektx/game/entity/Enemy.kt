@@ -2,6 +2,7 @@ package com.simplektx.game.entity
 
 import com.badlogic.gdx.math.Vector2
 import com.simplektx.game.minigame.Action
+import com.simplektx.game.minigame.NoAction
 import com.simplektx.game.minigame.Swing
 import kotlin.random.Random
 
@@ -9,11 +10,10 @@ class Enemy : Entity() {
     override val name: String = "Enemy"
     override val maxHealth: Int = 5
     override val currentHealth: Int = maxHealth
-    var action: Action? = null
+    var action: Action = NoAction()
 
     fun update(deltaMs: Long) {
-        action?.update(deltaMs)
-        if (action == null || action!!.isFinished) {
+        if (action is NoAction) {
             action = swing()
         }
     }

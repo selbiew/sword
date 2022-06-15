@@ -19,7 +19,7 @@ abstract class Attack(
     val timeRemainingMs: Long get() = prepTimeRemainingMs + executionTimeRemainingMs
 
     override fun update(deltaMs: Long) {
-        when (actionState) {
+        when (state) {
             ActionState.PREPARING -> {
                 prepare(deltaMs)
             }
@@ -36,7 +36,7 @@ abstract class Attack(
         var deltaRemainderMs = abs(min(0, prepTimeRemainingMs - deltaMs))
         prepTimeRemainingMs =  max(0, prepTimeRemainingMs - deltaMs)
         if (prepTimeRemainingMs == 0L) {
-            actionState = ActionState.EXECUTING
+            state = ActionState.EXECUTING
             execute(deltaRemainderMs)
         }
     }
@@ -45,7 +45,7 @@ abstract class Attack(
 //        var deltaRemainderMs = abs(min(0, executionTimeRemainingMs - deltaMs))
         executionTimeRemainingMs =  max(0, executionTimeRemainingMs - deltaMs)
         if (executionTimeRemainingMs == 0L) {
-            actionState = ActionState.FINISHED
+            state = ActionState.FINISHED
         }
     }
 }

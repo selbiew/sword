@@ -14,6 +14,7 @@ import com.simplektx.game.entity.Player
 import com.simplektx.game.input.CombatInputProcessor
 import com.simplektx.game.minigame.CombatMinigame
 import com.simplektx.game.utils.draw
+import com.simplektx.game.utils.write
 import ktx.graphics.use
 
 class CombatScreen : Screen {
@@ -45,6 +46,7 @@ class CombatScreen : Screen {
         ScreenUtils.clear(1f, 1f, 1f, 1f)
         camera.update()
         combatMinigame.update((delta * 1000).toLong())
+        spriteBatch.write(combatMinigame.interactions)
         shapeRenderer.draw(combatMinigame.playerAction, camera)
         shapeRenderer.draw(combatMinigame.enemyAction, camera)
 //        attackGenerator.update(delta)
