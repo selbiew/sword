@@ -2,6 +2,7 @@ package com.simplektx.game.entity
 
 import com.badlogic.gdx.math.Vector2
 import com.simplektx.game.input.CombatInput
+import com.simplektx.game.minigame.Stab
 import com.simplektx.game.minigame.Swing
 
 class Player : Entity() {
@@ -12,5 +13,11 @@ class Player : Entity() {
     fun swing(swingInput: CombatInput.SwingInput): Swing {
         return Swing(1, 1, 1000, 10 * swingInput.distance.toLong(),
                      swingInput.start, swingInput.end)
+    }
+
+    fun stab(stabInput: CombatInput.StabInput): Stab {
+        // TODO: Fix executionTime
+        return Stab(1, 1, 1000, 1000,
+            stabInput.center)
     }
 }

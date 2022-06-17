@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector3
 import com.simplektx.game.Line
 import com.simplektx.game.minigame.Action
 import com.simplektx.game.minigame.Interaction
+import com.simplektx.game.minigame.Stab
 import com.simplektx.game.minigame.Swing
 import ktx.graphics.use
 import kotlin.math.abs
@@ -48,7 +49,23 @@ fun SpriteBatch.write(text: String, bitmapFont: BitmapFont, position: Vector2, c
 fun ShapeRenderer.draw(action: Action?, camera: Camera, color: Color = Color.BLACK) {
     when (action) {
         is Swing -> draw(action, camera, color)
+        is Stab -> draw(action, camera, color)
     }
+}
+
+fun ShapeRenderer.draw(stab: Stab, camera: Camera, color: Color = Color.BLACK) {
+    val currentColor = getColor()
+    setColor(color)
+    use(ShapeRenderer.ShapeType.Line, camera) {
+        circle(stab.center, stab.endRadius.toFloat(), camera)
+    }
+//    println("exectionTimeMs: ${swing.executionTimeMs}")
+//    println("swing.executionProgress: ${swing.executionProgress}")
+//    println("swing.current: ${swing.current}")
+    use(ShapeRenderer.ShapeType.Filled, camera) {
+        circle(stab.center, stab.currentRadius.toFloat(), camera)
+    }
+    setColor(currentColor)
 }
 
 fun ShapeRenderer.draw(swing: Swing, camera: Camera, color: Color = Color.BLACK) {
@@ -64,6 +81,11 @@ fun ShapeRenderer.draw(swing: Swing, camera: Camera, color: Color = Color.BLACK)
         rectLine(swing.start, swing.current, camera, 3f)
     }
     setColor(currentColor)
+}
+
+fun ShapeRenderer.circle(center: Vector2, radius: Float, camera: Camera) {
+    val centerUnprojected = camera.unproject(Vector3(center.x, center.y, 1f))
+    circle(centerUnprojected.x, centerUnprojected.y, radius)
 }
 
 fun ShapeRenderer.line(lineToDraw: Line, camera: Camera) {

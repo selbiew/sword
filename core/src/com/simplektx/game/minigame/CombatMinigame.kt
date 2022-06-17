@@ -28,9 +28,12 @@ class CombatMinigame(val player: Player, val enemy: Enemy) {
     }
 
     fun receive(combatInput: CombatInput) {
-        when (combatInput) {
+        playerAction = when (combatInput) {
             is CombatInput.SwingInput -> {
-                playerAction = player.swing(combatInput)
+                player.swing(combatInput)
+            }
+            is CombatInput.StabInput -> {
+                player.stab(combatInput)
             }
         }
     }
