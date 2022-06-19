@@ -3,12 +3,10 @@ package com.simplektx.game.input
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.TimeUtils
-import com.simplektx.game.Line
 import com.simplektx.game.minigame.CombatMinigame
-import java.sql.Time
 import kotlin.math.min
 
-class CombatInputProcessor(val combatMinigame: CombatMinigame) : InputProcessor {
+class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputProcessor {
     private var currentStart = Vector2()
     private var inputStartTimeMs = TimeUtils.millis()
 //    var lines: MutableList<Line> = mutableListOf()
@@ -54,7 +52,7 @@ class CombatInputProcessor(val combatMinigame: CombatMinigame) : InputProcessor 
         return false
     }
 
-    fun emitCombatInput(combatInput: CombatInput) {
+    private fun emitCombatInput(combatInput: CombatInput) {
         combatMinigame.receive(combatInput)
     }
 }

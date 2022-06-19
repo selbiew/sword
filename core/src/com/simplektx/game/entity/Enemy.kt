@@ -1,9 +1,9 @@
 package com.simplektx.game.entity
 
 import com.badlogic.gdx.math.Vector2
-import com.simplektx.game.minigame.Action
-import com.simplektx.game.minigame.NoAction
-import com.simplektx.game.minigame.Swing
+import com.simplektx.game.minigame.action.Action
+import com.simplektx.game.minigame.action.NoAction
+import com.simplektx.game.minigame.action.Swing
 import kotlin.random.Random
 
 class Enemy : Entity() {
@@ -18,7 +18,7 @@ class Enemy : Entity() {
         }
     }
 
-    fun swing(): Swing {
+    private fun swing(): Swing {
         val start = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
         val end = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
         return Swing(1, 1, 1000, 10 * start.dst(end).toLong(), start, end)

@@ -1,4 +1,6 @@
-package com.simplektx.game.minigame
+package com.simplektx.game.minigame.action
+
+import com.simplektx.game.minigame.interaction.Interaction
 
 abstract class Action {
     var state: ActionState = ActionState.PREPARING

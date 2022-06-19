@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
 import com.simplektx.game.Line
-import com.simplektx.game.minigame.Action
-import com.simplektx.game.minigame.Interaction
-import com.simplektx.game.minigame.Stab
-import com.simplektx.game.minigame.Swing
+import com.simplektx.game.minigame.action.Action
+import com.simplektx.game.minigame.action.Stab
+import com.simplektx.game.minigame.action.Swing
+import com.simplektx.game.minigame.interaction.Interaction
 import ktx.graphics.use
 import kotlin.math.abs
 

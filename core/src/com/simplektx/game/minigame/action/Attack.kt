@@ -1,4 +1,4 @@
-package com.simplektx.game.minigame
+package com.simplektx.game.minigame.action
 
 import kotlin.math.abs
 import kotlin.math.max
@@ -7,12 +7,12 @@ import kotlin.math.min
 abstract class Attack(
     val damage: Int,
     val staminaCost: Int,
-    val prepTimeMs: Long,
-    val executionTimeMs: Long
+    private val prepTimeMs: Long,
+    private val executionTimeMs: Long
 ) : Action() {
     var timeElapsedMs: Long = 0
-    var prepTimeRemainingMs: Long = prepTimeMs
-    var executionTimeRemainingMs: Long = executionTimeMs
+    private var prepTimeRemainingMs: Long = prepTimeMs
+    private var executionTimeRemainingMs: Long = executionTimeMs
     val prepProgress: Float get() = 1F - (prepTimeRemainingMs.toFloat() / prepTimeMs.toFloat())
     val executionProgress: Float get() = 1F - (executionTimeRemainingMs.toFloat() / executionTimeMs.toFloat())
     val totalTimeMs: Long get() = prepTimeMs + executionTimeMs
@@ -32,8 +32,8 @@ abstract class Attack(
         }
     }
 
-    fun prepare(deltaMs: Long) {
-        var deltaRemainderMs = abs(min(0, prepTimeRemainingMs - deltaMs))
+    private fun prepare(deltaMs: Long) {
+        val deltaRemainderMs = abs(min(0, prepTimeRemainingMs - deltaMs))
         prepTimeRemainingMs =  max(0, prepTimeRemainingMs - deltaMs)
         if (prepTimeRemainingMs == 0L) {
             state = ActionState.EXECUTING
@@ -41,7 +41,7 @@ abstract class Attack(
         }
     }
 
-    fun execute(deltaMs: Long) {
+    private fun execute(deltaMs: Long) {
 //        var deltaRemainderMs = abs(min(0, executionTimeRemainingMs - deltaMs))
         executionTimeRemainingMs =  max(0, executionTimeRemainingMs - deltaMs)
         if (executionTimeRemainingMs == 0L) {

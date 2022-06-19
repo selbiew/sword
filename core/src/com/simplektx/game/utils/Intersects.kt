@@ -1,8 +1,9 @@
 package com.simplektx.game.utils
 
 import com.badlogic.gdx.math.Vector2
-import com.simplektx.game.minigame.Stab
-import com.simplektx.game.minigame.Swing
+import com.simplektx.game.minigame.action.Attack
+import com.simplektx.game.minigame.action.Stab
+import com.simplektx.game.minigame.action.Swing
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -32,51 +33,51 @@ private fun orientation(p: Vector2, q: Vector2, r: Vector2): Int {
 
 // The main function that returns true if line segment 'p1q1'
 // and 'p2q2' intersect.
-fun intersects(s1: Swing, s2: Swing): Boolean {
+fun intersects(swing: Swing, otherSwing: Swing): Boolean {
     // Find the four orientations needed for general and special cases
-    val o1 = orientation(s1.start, s1.end, s2.start)
-    val o2 = orientation(s1.start, s1.end, s2.end)
-    val o3 = orientation(s2.start, s2.end, s1.start)
-    val o4 = orientation(s2.start, s2.end, s1.end)
+    val o1 = orientation(swing.start, swing.end, otherSwing.start)
+    val o2 = orientation(swing.start, swing.end, otherSwing.end)
+    val o3 = orientation(otherSwing.start, otherSwing.end, swing.start)
+    val o4 = orientation(otherSwing.start, otherSwing.end, swing.end)
 
     // General case
     if (o1 != o2 && o3 != o4) return true
 
     // Special Cases
     // p1, q1 and p2 are collinear and p2 lies on segment p1q1
-    if (o1 == 0 && onSegment(s1.start, s2.start, s1.end)) return true
+    if (o1 == 0 && onSegment(swing.start, otherSwing.start, swing.end)) return true
 
     // p1, q1 and q2 are collinear and q2 lies on segment p1q1
-    if (o2 == 0 && onSegment(s1.start, s2.end, s1.end)) return true
+    if (o2 == 0 && onSegment(swing.start, otherSwing.end, swing.end)) return true
 
     // p2, q2 and p1 are collinear and p1 lies on segment p2q2
-    if (o3 == 0 && onSegment(s2.start, s1.start, s2.end)) return true
+    if (o3 == 0 && onSegment(otherSwing.start, swing.start, otherSwing.end)) return true
 
     // p2, q2 and q1 are collinear and q1 lies on segment p2q2
-    if (o4 == 0 && onSegment(s2.start, s1.end, s2.end)) return true
+    if (o4 == 0 && onSegment(otherSwing.start, swing.end, otherSwing.end)) return true
 
     // Matches no above cases
     return false
 }
 
 // https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
-fun intersects(s1: Stab, s2: Swing): Boolean {
-    val f = s2.start.cpy().sub(s1.center.cpy())
-    val a = s2.direction.dot(s2.direction)
-    val b = 2 * f.dot(s2.direction)
-    val c = f.dot(f) - (s1.endRadius * s1.endRadius)
+fun intersects(stab: Stab, swing: Swing): Boolean {
+    val f = swing.start.cpy().sub(stab.center.cpy())
+    val a = swing.direction.dot(swing.direction)
+    val b = 2 * f.dot(swing.direction)
+    val c = f.dot(f) - (stab.endRadius * stab.endRadius)
 
-    var discriminant = b * b - 4 * a * c;
+    var discriminant = b * b - 4 * a * c
     if (discriminant < 0) {
         return false
     } else {
-        discriminant = sqrt(discriminant);
+        discriminant = sqrt(discriminant)
 
         // either solution may be on or off the ray so need to test both
         // t1 is always the smaller value, because BOTH discriminant and
         // a are nonnegative.
-        val t1 = (-b - discriminant) / (2 * a);
-        val t2 = (-b + discriminant) / (2 * a);
+        val t1 = (-b - discriminant) / (2 * a)
+        val t2 = (-b + discriminant) / (2 * a)
 
         // 4x HIT cases:
         //          -o->             --|-->  |            |  --|->                  | -> |
@@ -91,7 +92,7 @@ fun intersects(s1: Stab, s2: Swing): Boolean {
             // (since t1 uses -b - discriminant)
             // Impale, Poke
             println("Impale, poke")
-            return true;
+            return true
         }
 
         // here t1 didn't intersect so we are either started
@@ -99,11 +100,11 @@ fun intersects(s1: Stab, s2: Swing): Boolean {
         if (t2 in 0.0..1.0) {
             // ExitWound
             println("exit wound")
-            return true;
+            return true
         }
 
         // Check for completely inside
-        if (s2.start.dst(s1.center) <= s1.endRadius && s2.end.dst(s1.center) <= s1.endRadius) {
+        if (swing.start.dst(stab.center) <= stab.endRadius && swing.end.dst(stab.center) <= stab.endRadius) {
             println("Inside")
             return true
         }
@@ -111,5 +112,29 @@ fun intersects(s1: Stab, s2: Swing): Boolean {
         // no intn: FallShort, Past
         println("fallshort or past")
         return false
+    }
+}
+
+fun intersects(stab: Stab, otherStab: Stab): Boolean {
+    return (stab.center.dst(otherStab.center) <= (stab.endRadius + otherStab.endRadius))
+}
+
+fun intersects(attack: Attack, otherAttack: Attack): Boolean {
+    return when (attack) {
+        is Swing -> {
+            return when (otherAttack) {
+                is Swing -> intersects(attack, otherAttack)
+                is Stab -> intersects(otherAttack, attack)
+                else -> false
+            }
+        }
+        is Stab -> {
+            return when (otherAttack) {
+                is Swing -> intersects(attack, otherAttack)
+                is Stab -> intersects(attack, otherAttack)
+                else -> false
+            }
+        }
+        else -> false
     }
 }

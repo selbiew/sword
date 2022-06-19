@@ -1,9 +1,8 @@
 package com.simplektx.game.entity
 
-import com.badlogic.gdx.math.Vector2
 import com.simplektx.game.input.CombatInput
-import com.simplektx.game.minigame.Stab
-import com.simplektx.game.minigame.Swing
+import com.simplektx.game.minigame.action.Stab
+import com.simplektx.game.minigame.action.Swing
 
 class Player : Entity() {
     override val name: String = "Player"
