@@ -1,5 +1,6 @@
 package com.simplektx.game.input
 
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.TimeUtils
@@ -9,7 +10,8 @@ import kotlin.math.min
 class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputProcessor {
     private var currentStart = Vector2()
     private var inputStartTimeMs = TimeUtils.millis()
-//    var lines: MutableList<Line> = mutableListOf()
+    private var touchDownButton: Int? = null
+    private var isTouchDown: Boolean = false
 
     override fun keyDown(keycode: Int): Boolean {
         return false
@@ -24,19 +26,35 @@ class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputPr
     }
 
     override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-        currentStart = Vector2(x.toFloat(), y.toFloat())
-        inputStartTimeMs = TimeUtils.millis()
+        if (!isTouchDown) {
+            isTouchDown = true
+            currentStart = Vector2(x.toFloat(), y.toFloat())
+            inputStartTimeMs = TimeUtils.millis()
+            touchDownButton = button
+        }
         return false
     }
 
     override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-        val end = Vector2(x.toFloat(), y.toFloat())
-        if (currentStart.dst(end) <= 5.0) {
-            emitCombatInput(CombatInput.StabInput(end, min(500f, (TimeUtils.timeSinceMillis(inputStartTimeMs) / 50.0).toFloat())))
-        } else {
-            emitCombatInput(CombatInput.SwingInput(currentStart, end))
+        if (button == touchDownButton) {
+            val end = Vector2(x.toFloat(), y.toFloat())
+            if (touchDownButton == Input.Buttons.RIGHT) {
+                emitCombatInput(CombatInput.BlockInput(currentStart, end))
+            } else if (touchDownButton == Input.Buttons.LEFT) {
+                if (currentStart.dst(end) <= 5.0) {
+                    emitCombatInput(
+                        CombatInput.StabInput(
+                            end,
+                            min(500f, (TimeUtils.timeSinceMillis(inputStartTimeMs) / 50.0).toFloat())
+                        )
+                    )
+                } else {
+                    emitCombatInput(CombatInput.SwingInput(currentStart, end))
+                }
+            }
+            isTouchDown = false
         }
-//        lines.add(Line(currentStart, Vector2(x.toFloat(), y.toFloat())))
+
         return false
     }
 
@@ -63,4 +81,8 @@ sealed class CombatInput {
     }
 
     class StabInput(val center: Vector2, val force: Float): CombatInput()
+
+    class BlockInput(val start: Vector2, val end: Vector2): CombatInput() {
+        val distance: Float get() = start.dst(end)
+    }
 }

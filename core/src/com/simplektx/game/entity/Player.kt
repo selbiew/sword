@@ -1,6 +1,7 @@
 package com.simplektx.game.entity
 
 import com.simplektx.game.input.CombatInput
+import com.simplektx.game.minigame.action.Block
 import com.simplektx.game.minigame.action.Stab
 import com.simplektx.game.minigame.action.Swing
 
@@ -18,5 +19,9 @@ class Player : Entity() {
         // TODO: Fix executionTime
         return Stab(1, 1, 1000, 1000,
             stabInput.center)
+    }
+
+    fun block(blockInput: CombatInput.BlockInput): Block {
+        return Block(blockInput.distance, blockInput.start, blockInput.end)
     }
 }

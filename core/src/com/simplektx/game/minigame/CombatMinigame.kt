@@ -5,9 +5,7 @@ import com.simplektx.game.entity.Player
 import com.simplektx.game.input.CombatInput
 import com.simplektx.game.minigame.action.Action
 import com.simplektx.game.minigame.action.NoAction
-import com.simplektx.game.minigame.interaction.Hit
-import com.simplektx.game.minigame.interaction.Interaction
-import com.simplektx.game.minigame.interaction.Parry
+import com.simplektx.game.minigame.interaction.*
 
 class CombatMinigame(private val player: Player, private val enemy: Enemy) {
     var playerAction: Action = NoAction()
@@ -41,6 +39,20 @@ class CombatMinigame(private val player: Player, private val enemy: Enemy) {
                 enemy.action = NoAction()
                 interactions.add(interaction)
             }
+            is BlockHit -> {
+                playerAction = NoAction()
+                enemy.action = NoAction()
+                interactions.add(interaction)
+            }
+            is BlockMiss -> {
+                if (playerAction == interaction.initiator) {
+                    playerAction = NoAction()
+                }
+                else if (enemyAction == interaction.initiator) {
+                    enemy.action = NoAction()
+                }
+                interactions.add(interaction)
+            }
         }
         interactions.removeAll { it.isFinished}
     }
@@ -52,6 +64,9 @@ class CombatMinigame(private val player: Player, private val enemy: Enemy) {
             }
             is CombatInput.StabInput -> {
                 player.stab(combatInput)
+            }
+            is CombatInput.BlockInput -> {
+                player.block(combatInput)
             }
         }
     }

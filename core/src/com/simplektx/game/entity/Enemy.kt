@@ -3,6 +3,7 @@ package com.simplektx.game.entity
 import com.badlogic.gdx.math.Vector2
 import com.simplektx.game.minigame.action.Action
 import com.simplektx.game.minigame.action.NoAction
+import com.simplektx.game.minigame.action.Stab
 import com.simplektx.game.minigame.action.Swing
 import kotlin.random.Random
 
@@ -14,7 +15,11 @@ class Enemy : Entity() {
 
     fun update(deltaMs: Long) {
         if (action is NoAction) {
-            action = swing()
+            action = if (Random.nextBoolean()) {
+                swing()
+            } else {
+                stab()
+            }
         }
     }
 
@@ -22,5 +27,10 @@ class Enemy : Entity() {
         val start = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
         val end = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
         return Swing(1, 1, 1000, 10 * start.dst(end).toLong(), start, end)
+    }
+
+    private fun stab(): Stab {
+        val center = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
+        return Stab(1, 1, 1000, 1000, center)
     }
 }

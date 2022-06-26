@@ -1,7 +1,8 @@
 package com.simplektx.game.utils
 
 import com.badlogic.gdx.math.Vector2
-import com.simplektx.game.minigame.action.Attack
+import com.simplektx.game.minigame.action.Action
+import com.simplektx.game.minigame.action.Block
 import com.simplektx.game.minigame.action.Stab
 import com.simplektx.game.minigame.action.Swing
 import kotlin.math.max
@@ -119,19 +120,109 @@ fun intersects(stab: Stab, otherStab: Stab): Boolean {
     return (stab.center.dst(otherStab.center) <= (stab.endRadius + otherStab.endRadius))
 }
 
-fun intersects(attack: Attack, otherAttack: Attack): Boolean {
-    return when (attack) {
+fun intersects(block: Block, swing: Swing): Boolean {
+    // Find the four orientations needed for general and special cases
+    val o1 = orientation(swing.start, swing.end, block.start)
+    val o2 = orientation(swing.start, swing.end, block.end)
+    val o3 = orientation(block.start, block.end, swing.start)
+    val o4 = orientation(block.start, block.end, swing.end)
+
+    // General case
+    if (o1 != o2 && o3 != o4) return true
+
+    // Special Cases
+    // p1, q1 and p2 are collinear and p2 lies on segment p1q1
+    if (o1 == 0 && onSegment(swing.start, block.start, swing.end)) return true
+
+    // p1, q1 and q2 are collinear and q2 lies on segment p1q1
+    if (o2 == 0 && onSegment(swing.start, block.end, swing.end)) return true
+
+    // p2, q2 and p1 are collinear and p1 lies on segment p2q2
+    if (o3 == 0 && onSegment(block.start, swing.start, block.end)) return true
+
+    // p2, q2 and q1 are collinear and q1 lies on segment p2q2
+    if (o4 == 0 && onSegment(block.start, swing.end, block.end)) return true
+
+    // Matches no above cases
+    return false
+}
+
+fun intersects(block: Block, stab: Stab): Boolean {
+    val f = block.start.cpy().sub(stab.center.cpy())
+    val a = block.direction.dot(block.direction)
+    val b = 2 * f.dot(block.direction)
+    val c = f.dot(f) - (stab.endRadius * stab.endRadius)
+
+    var discriminant = b * b - 4 * a * c
+    if (discriminant < 0) {
+        return false
+    } else {
+        discriminant = sqrt(discriminant)
+
+        // either solution may be on or off the ray so need to test both
+        // t1 is always the smaller value, because BOTH discriminant and
+        // a are nonnegative.
+        val t1 = (-b - discriminant) / (2 * a)
+        val t2 = (-b + discriminant) / (2 * a)
+
+        // 4x HIT cases:
+        //          -o->             --|-->  |            |  --|->                  | -> |
+        // Impale(t1 hit,t2 hit), Poke(t1 hit,t2>1), ExitWound(t1<0, t2 hit), CompletelyInside(t1<0, t2>1)
+
+        // 2x MISS cases:
+        //       ->  o                     o ->
+        // FallShort (t1>1,t2>1), Past (t1<0,t2<0)
+
+        if (t1 in 0.0..1.0) {
+            // t1 is the intersection, and it's closer than t2
+            // (since t1 uses -b - discriminant)
+            // Impale, Poke
+            println("Impale, poke")
+            return true
+        }
+
+        // here t1 didn't intersect so we are either started
+        // inside the sphere or completely past it
+        if (t2 in 0.0..1.0) {
+            // ExitWound
+            println("exit wound")
+            return true
+        }
+
+        // Check for completely inside
+        if (block.start.dst(stab.center) <= stab.endRadius && block.end.dst(stab.center) <= stab.endRadius) {
+            println("Inside")
+            return true
+        }
+
+        // no intn: FallShort, Past
+        println("fallshort or past")
+        return false
+    }
+}
+
+fun intersects(action: Action, otherAction: Action): Boolean {
+    return when (action) {
         is Swing -> {
-            return when (otherAttack) {
-                is Swing -> intersects(attack, otherAttack)
-                is Stab -> intersects(otherAttack, attack)
+            return when (otherAction) {
+                is Swing -> intersects(action, otherAction)
+                is Stab -> intersects(otherAction, action)
+                is Block -> intersects(otherAction, action)
                 else -> false
             }
         }
         is Stab -> {
-            return when (otherAttack) {
-                is Swing -> intersects(attack, otherAttack)
-                is Stab -> intersects(attack, otherAttack)
+            return when (otherAction) {
+                is Swing -> intersects(action, otherAction)
+                is Stab -> intersects(action, otherAction)
+                is Block -> intersects(otherAction, action)
+                else -> false
+            }
+        }
+        is Block -> {
+            return when (otherAction) {
+                is Swing -> intersects(action, otherAction)
+                is Stab -> intersects(action, otherAction)
                 else -> false
             }
         }
