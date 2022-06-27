@@ -2,7 +2,6 @@ package com.simplektx.game.utils
 
 import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
@@ -23,10 +22,6 @@ fun Vector2.xDst(v: Vector2): Float {
 
 fun Vector2.yDst(v: Vector2): Float {
     return abs((this.y - v.y))
-}
-
-fun Pixmap.drawLine(v1: Vector2, v2: Vector2) {
-    this.drawLine(v1.x.toInt(), v1.y.toInt(), v2.x.toInt(), v2.y.toInt())
 }
 
 fun SpriteBatch.draw(texture: Texture) {
@@ -60,9 +55,6 @@ fun ShapeRenderer.draw(stab: Stab, camera: Camera, color: Color = Color.BLACK) {
     use(ShapeRenderer.ShapeType.Line, camera) {
         circle(stab.center, stab.endRadius.toFloat(), camera)
     }
-//    println("exectionTimeMs: ${swing.executionTimeMs}")
-//    println("swing.executionProgress: ${swing.executionProgress}")
-//    println("swing.current: ${swing.current}")
     use(ShapeRenderer.ShapeType.Filled, camera) {
         circle(stab.center, stab.currentRadius.toFloat(), camera)
     }
@@ -75,9 +67,6 @@ fun ShapeRenderer.draw(swing: Swing, camera: Camera, color: Color = Color.BLACK)
     use(ShapeRenderer.ShapeType.Line, camera) {
         rectLine(swing.start, swing.end, camera)
     }
-//    println("exectionTimeMs: ${swing.executionTimeMs}")
-//    println("swing.executionProgress: ${swing.executionProgress}")
-//    println("swing.current: ${swing.current}")
     use(ShapeRenderer.ShapeType.Filled, camera) {
         rectLine(swing.start, swing.current, camera, 3f)
     }
@@ -90,9 +79,6 @@ fun ShapeRenderer.draw(block: Block, camera: Camera, color: Color = Color.GREEN)
     use(ShapeRenderer.ShapeType.Line, camera) {
         rectLine(block.start, block.end, camera)
     }
-//    println("exectionTimeMs: ${swing.executionTimeMs}")
-//    println("swing.executionProgress: ${swing.executionProgress}")
-//    println("swing.current: ${swing.current}")
     use(ShapeRenderer.ShapeType.Filled, camera) {
         rectLine(block.start, block.current, camera, 3f)
     }

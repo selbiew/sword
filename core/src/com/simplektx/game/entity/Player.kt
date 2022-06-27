@@ -11,17 +11,20 @@ class Player : Entity() {
     override val currentHealth: Int = maxHealth
 
     fun swing(swingInput: CombatInput.SwingInput): Swing {
+        executingAction = true
         return Swing(1, 1, 1000, 10 * swingInput.distance.toLong(),
                      swingInput.start, swingInput.end)
     }
 
     fun stab(stabInput: CombatInput.StabInput): Stab {
         // TODO: Fix executionTime
+        executingAction = true
         return Stab(1, 1, 1000, 1000,
             stabInput.center)
     }
 
     fun block(blockInput: CombatInput.BlockInput): Block {
+        executingAction = true
         return Block(blockInput.distance, blockInput.start, blockInput.end)
     }
 }

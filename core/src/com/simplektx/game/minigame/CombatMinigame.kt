@@ -28,6 +28,7 @@ class CombatMinigame(private val player: Player, private val enemy: Enemy) {
             is Hit -> {
                 if (playerAction == interaction.initiator) {
                     playerAction = NoAction()
+                    player.executingAction = false
                 }
                 else if (enemyAction == interaction.initiator) {
                     enemy.action = NoAction()
@@ -36,17 +37,20 @@ class CombatMinigame(private val player: Player, private val enemy: Enemy) {
             }
             is Parry -> {
                 playerAction = NoAction()
+                player.executingAction = false
                 enemy.action = NoAction()
                 interactions.add(interaction)
             }
             is BlockHit -> {
                 playerAction = NoAction()
+                player.executingAction = false
                 enemy.action = NoAction()
                 interactions.add(interaction)
             }
             is BlockMiss -> {
                 if (playerAction == interaction.initiator) {
                     playerAction = NoAction()
+                    player.executingAction = false
                 }
                 else if (enemyAction == interaction.initiator) {
                     enemy.action = NoAction()
@@ -58,15 +62,17 @@ class CombatMinigame(private val player: Player, private val enemy: Enemy) {
     }
 
     fun receive(combatInput: CombatInput) {
-        playerAction = when (combatInput) {
-            is CombatInput.SwingInput -> {
-                player.swing(combatInput)
-            }
-            is CombatInput.StabInput -> {
-                player.stab(combatInput)
-            }
-            is CombatInput.BlockInput -> {
-                player.block(combatInput)
+        if (!player.executingAction) {
+            playerAction = when (combatInput) {
+                is CombatInput.SwingInput -> {
+                    player.swing(combatInput)
+                }
+                is CombatInput.StabInput -> {
+                    player.stab(combatInput)
+                }
+                is CombatInput.BlockInput -> {
+                    player.block(combatInput)
+                }
             }
         }
     }

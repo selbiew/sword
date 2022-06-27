@@ -4,4 +4,5 @@ abstract class Entity {
     abstract val name: String
     abstract val maxHealth: Int
     abstract val currentHealth: Int
+    var executingAction: Boolean = false
 }
