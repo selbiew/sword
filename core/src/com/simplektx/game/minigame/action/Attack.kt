@@ -42,7 +42,6 @@ abstract class Attack(
     }
 
     private fun execute(deltaMs: Long) {
-//        var deltaRemainderMs = abs(min(0, executionTimeRemainingMs - deltaMs))
         executionTimeRemainingMs =  max(0, executionTimeRemainingMs - deltaMs)
         if (executionTimeRemainingMs == 0L) {
             state = ActionState.FINISHED

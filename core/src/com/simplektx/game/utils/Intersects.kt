@@ -145,6 +145,8 @@ fun intersects(block: Block, swing: Swing): Boolean {
     // p2, q2 and q1 are collinear and q1 lies on segment p2q2
     if (o4 == 0 && onSegment(block.start, swing.end, block.end)) return true
 
+    print("block not intersect swing")
+
     // Matches no above cases
     return false
 }

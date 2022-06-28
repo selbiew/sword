@@ -10,7 +10,7 @@ import ktx.math.dst
 import kotlin.math.min
 
 class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputProcessor {
-    private var currentStart = ImmutableVector2(0f, 0f)
+    private var currentStart = ImmutableVector2.ZERO
     private var inputStartTimeMs = TimeUtils.millis()
     private var touchDownButton: Int? = null
     private var isTouchDown: Boolean = false

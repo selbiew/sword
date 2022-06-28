@@ -5,6 +5,8 @@ import com.simplektx.game.minigame.interaction.Hit
 import com.simplektx.game.minigame.interaction.Interaction
 import com.simplektx.game.minigame.interaction.NoInteraction
 
+// TODO: Singleton?
+
 class NoAction : Action() {
     override fun interact(other: Action): Interaction {
         if (other.isFinished) {

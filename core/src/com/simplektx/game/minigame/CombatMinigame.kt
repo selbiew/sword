@@ -8,8 +8,8 @@ import com.simplektx.game.minigame.action.NoAction
 import com.simplektx.game.minigame.interaction.*
 
 class CombatMinigame(val player: Player, val enemy: Enemy) {
-    var playerAction: Action = NoAction()
-    var enemyAction: Action = enemy.action
+    val playerAction: Action get() = player.action
+    val enemyAction: Action get() = enemy.action
     var interactions: MutableList<Interaction> = mutableListOf()
 
     fun update(deltaMs: Long) {
@@ -20,59 +20,27 @@ class CombatMinigame(val player: Player, val enemy: Enemy) {
         process(playerAction.interact(enemyAction))
 
         enemy.update(deltaMs)
-        enemyAction = enemy.action
     }
 
     private fun process(interaction: Interaction) {
-        when (interaction) {
-            is Hit -> {
-                if (playerAction == interaction.initiator) {
-                    playerAction = NoAction()
-                    player.executingAction = false
-                }
-                else if (enemyAction == interaction.initiator) {
-                    enemy.action = NoAction()
-                }
-                interactions.add(interaction)
-            }
-            is Parry -> {
-                playerAction = NoAction()
-                player.executingAction = false
-                enemy.action = NoAction()
-                interactions.add(interaction)
-            }
-            is BlockHit -> {
-                playerAction = NoAction()
-                player.executingAction = false
-                enemy.action = NoAction()
-                interactions.add(interaction)
-            }
-            is BlockMiss -> {
-                if (playerAction == interaction.initiator) {
-                    playerAction = NoAction()
-                    player.executingAction = false
-                }
-                else if (enemyAction == interaction.initiator) {
-                    enemy.action = NoAction()
-                }
-                interactions.add(interaction)
-            }
+        if (interaction !is NoInteraction) {
+            player.process(interaction)
+            enemy.process(interaction)
+            interactions.add(interaction)
+            interactions.removeAll { it.isFinished }
         }
-        interactions.removeAll { it.isFinished}
     }
 
     fun receive(combatInput: CombatInput) {
-        if (!player.executingAction) {
-            playerAction = when (combatInput) {
-                is CombatInput.SwingInput -> {
-                    player.swing(combatInput)
-                }
-                is CombatInput.StabInput -> {
-                    player.stab(combatInput)
-                }
-                is CombatInput.BlockInput -> {
-                    player.block(combatInput)
-                }
+        when (combatInput) {
+            is CombatInput.SwingInput -> {
+                player.swing(combatInput)
+            }
+            is CombatInput.StabInput -> {
+                player.stab(combatInput)
+            }
+            is CombatInput.BlockInput -> {
+                player.block(combatInput)
             }
         }
     }

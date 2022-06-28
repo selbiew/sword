@@ -15,7 +15,7 @@ class CombatScreen : Screen {
 
     override fun show() {
         if (!isInitialized) {
-            combatMinigame = CombatMinigame(Player(), Enemy())
+            combatMinigame = CombatMinigame(Player(), Enemy("Goblin", 5))
             combatMinigameRenderer = CombatMinigameRenderer(combatMinigame)
             combatMinigameRenderer.initialize()
 
