@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import com.simplektx.game.input.CombatInput
 import com.simplektx.game.minigame.action.Action
 import com.simplektx.game.minigame.action.Block
 import com.simplektx.game.minigame.action.Stab
@@ -16,6 +17,8 @@ import com.simplektx.game.minigame.interaction.Interaction
 import ktx.graphics.use
 import ktx.math.ImmutableVector2
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 fun SpriteBatch.draw(texture: Texture) {
     this.draw(texture, texture.width.toFloat(), texture.height.toFloat())
@@ -40,6 +43,41 @@ fun ShapeRenderer.draw(action: Action?, camera: Camera, color: Color = Color.BLA
         is Stab -> draw(action, camera, color)
         is Block -> draw(action, camera, color)
     }
+}
+
+fun ShapeRenderer.draw(combatInput: CombatInput?, camera: Camera, color: Color = Color.BLACK) {
+    when (combatInput) {
+        is CombatInput.SwingInput -> draw(combatInput, camera, color)
+        is CombatInput.StabInput -> draw(combatInput, camera, color)
+        is CombatInput.BlockInput -> draw(combatInput, camera, color)
+    }
+}
+
+fun ShapeRenderer.draw(stabInput: CombatInput.StabInput, camera: Camera, color: Color = Color.GRAY) {
+    val currentColor = getColor()
+    setColor(color)
+    use(ShapeRenderer.ShapeType.Line, camera) {
+        circle(stabInput.center, (min(2000, stabInput.duration) * 0.01).toFloat(), camera)
+    }
+    setColor(currentColor)
+}
+
+fun ShapeRenderer.draw(swingInput: CombatInput.SwingInput, camera: Camera, color: Color = Color.GRAY) {
+    val currentColor = getColor()
+    setColor(color)
+    use(ShapeRenderer.ShapeType.Line, camera) {
+        rectLine(swingInput.start, swingInput.end, camera)
+    }
+    setColor(currentColor)
+}
+
+fun ShapeRenderer.draw(blockInput: CombatInput.BlockInput, camera: Camera, color: Color = Color.GRAY) {
+    val currentColor = getColor()
+    setColor(color)
+    use(ShapeRenderer.ShapeType.Line, camera) {
+        rectLine(blockInput.start, blockInput.end, camera)
+    }
+    setColor(currentColor)
 }
 
 fun ShapeRenderer.draw(stab: Stab, camera: Camera, color: Color = Color.BLACK) {

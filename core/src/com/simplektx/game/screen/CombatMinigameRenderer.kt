@@ -39,6 +39,7 @@ class CombatMinigameRenderer(private val combatMinigame: CombatMinigame) {
         spriteBatch.write(combatMinigame.interactions)
         shapeRenderer.draw(combatMinigame.playerAction, camera, Color.BLUE)
         shapeRenderer.draw(combatMinigame.enemyAction, camera, Color.RED)
+        shapeRenderer.draw(combatMinigame.playerPlannedInput, camera)
 
         draw(combatMinigame.player, Vector2(20f, 20f))
         draw(combatMinigame.enemy, Vector2(680f, 680f))
