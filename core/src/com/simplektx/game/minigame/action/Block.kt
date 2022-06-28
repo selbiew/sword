@@ -3,11 +3,12 @@ package com.simplektx.game.minigame.action
 import com.badlogic.gdx.math.Vector2
 import com.simplektx.game.minigame.interaction.*
 import com.simplektx.game.utils.intersects
+import ktx.math.ImmutableVector2
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class Block(val force: Float, val start: Vector2, val end: Vector2) : Action() {
+class Block(val force: Float, val start: ImmutableVector2, val end: ImmutableVector2) : Action() {
     var prepTimeMs: Long = 500
     var executionTimeMs: Long = 1000
     var timeElapsedMs: Long = 0
@@ -17,8 +18,8 @@ class Block(val force: Float, val start: Vector2, val end: Vector2) : Action() {
     val executionProgress: Float get() = 1F - (executionTimeRemainingMs.toFloat() / executionTimeMs.toFloat())
     val totalTimeMs: Long get() = prepTimeMs + executionTimeMs
     val timeRemainingMs: Long get() = prepTimeRemainingMs + executionTimeRemainingMs
-    val current: Vector2 get() = start.cpy().add(end.cpy().sub(start.cpy()).scl(executionProgress))
-    val direction: Vector2 get() = end.cpy().sub(start.cpy())
+    val current: ImmutableVector2 get() = start + ((end - start) * executionProgress)
+    val direction: ImmutableVector2 get() = end - start
 
     override fun update(deltaMs: Long) {
         when (state) {

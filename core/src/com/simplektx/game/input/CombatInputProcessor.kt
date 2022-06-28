@@ -5,10 +5,12 @@ import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.TimeUtils
 import com.simplektx.game.minigame.CombatMinigame
+import ktx.math.ImmutableVector2
+import ktx.math.dst
 import kotlin.math.min
 
 class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputProcessor {
-    private var currentStart = Vector2()
+    private var currentStart = ImmutableVector2(0f, 0f)
     private var inputStartTimeMs = TimeUtils.millis()
     private var touchDownButton: Int? = null
     private var isTouchDown: Boolean = false
@@ -28,7 +30,7 @@ class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputPr
     override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
         if (!isTouchDown) {
             isTouchDown = true
-            currentStart = Vector2(x.toFloat(), y.toFloat())
+            currentStart = ImmutableVector2(x.toFloat(), y.toFloat())
             inputStartTimeMs = TimeUtils.millis()
             touchDownButton = button
         }
@@ -37,7 +39,7 @@ class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputPr
 
     override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
         if (button == touchDownButton) {
-            val end = Vector2(x.toFloat(), y.toFloat())
+            val end = ImmutableVector2(x.toFloat(), y.toFloat())
             if (touchDownButton == Input.Buttons.RIGHT) {
                 emitCombatInput(CombatInput.BlockInput(currentStart, end))
             } else if (touchDownButton == Input.Buttons.LEFT) {
@@ -76,13 +78,13 @@ class CombatInputProcessor(private val combatMinigame: CombatMinigame) : InputPr
 }
 
 sealed class CombatInput {
-    class SwingInput(val start: Vector2, val end: Vector2): CombatInput() {
+    class SwingInput(val start: ImmutableVector2, val end: ImmutableVector2): CombatInput() {
         val distance: Float get() = start.dst(end)
     }
 
-    class StabInput(val center: Vector2, val force: Float): CombatInput()
+    class StabInput(val center: ImmutableVector2, val force: Float): CombatInput()
 
-    class BlockInput(val start: Vector2, val end: Vector2): CombatInput() {
+    class BlockInput(val start: ImmutableVector2, val end: ImmutableVector2): CombatInput() {
         val distance: Float get() = start.dst(end)
     }
 }

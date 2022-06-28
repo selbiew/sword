@@ -6,6 +6,8 @@ import com.simplektx.game.minigame.interaction.Interaction
 import com.simplektx.game.minigame.interaction.NoInteraction
 import com.simplektx.game.minigame.interaction.Parry
 import com.simplektx.game.utils.intersects
+import ktx.math.ImmutableVector2
+import ktx.math.dst
 
 
 class Swing(
@@ -13,11 +15,11 @@ class Swing(
     staminaCost: Int,
     prepTimeMs: Long,
     executionTimeMs: Long,
-    val start: Vector2,
-    val end: Vector2
+    val start: ImmutableVector2,
+    val end: ImmutableVector2
 ) : Attack(damage, staminaCost, prepTimeMs, executionTimeMs) {
-    val current: Vector2 get() = start.cpy().add(end.cpy().sub(start.cpy()).scl(executionProgress))
-    val direction: Vector2 get() = end.cpy().sub(start.cpy())
+    val current: ImmutableVector2 get() = start + ((end - start) * executionProgress)
+    val direction: ImmutableVector2 get() = end - start
     // TODO: Improve
     val force: Float get() = start.dst(end)
 

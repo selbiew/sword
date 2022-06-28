@@ -14,15 +14,8 @@ import com.simplektx.game.minigame.action.Stab
 import com.simplektx.game.minigame.action.Swing
 import com.simplektx.game.minigame.interaction.Interaction
 import ktx.graphics.use
+import ktx.math.ImmutableVector2
 import kotlin.math.abs
-
-fun Vector2.xDst(v: Vector2): Float {
-    return abs(this.x - v.x)
-}
-
-fun Vector2.yDst(v: Vector2): Float {
-    return abs((this.y - v.y))
-}
 
 fun SpriteBatch.draw(texture: Texture) {
     this.draw(texture, texture.width.toFloat(), texture.height.toFloat())
@@ -85,12 +78,12 @@ fun ShapeRenderer.draw(block: Block, camera: Camera, color: Color = Color.GREEN)
     setColor(currentColor)
 }
 
-fun ShapeRenderer.circle(center: Vector2, radius: Float, camera: Camera) {
+fun ShapeRenderer.circle(center: ImmutableVector2, radius: Float, camera: Camera) {
     val centerUnprojected = camera.unproject(Vector3(center.x, center.y, 1f))
     circle(centerUnprojected.x, centerUnprojected.y, radius)
 }
 
-fun ShapeRenderer.rectLine(start: Vector2, end: Vector2, camera: Camera, width: Float = 5f) {
+fun ShapeRenderer.rectLine(start: ImmutableVector2, end: ImmutableVector2, camera: Camera, width: Float = 5f) {
     val startUnprojected = camera.unproject(Vector3(start.x, start.y, 1f))
     val endUnprojected = camera.unproject(Vector3(end.x, end.y, 1f))
     rectLine(startUnprojected.x, startUnprojected.y, endUnprojected.x, endUnprojected.y, width)

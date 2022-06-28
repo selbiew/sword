@@ -54,6 +54,7 @@ project(":desktop") {
         api "io.github.libktx:ktx-scene2d:$ktxVersion"
         api "io.github.libktx:ktx-actors:$ktxVersion"
         api "io.github.libktx:ktx-log:$ktxVersion"
+        api "io.github.libktx:ktx-math:$ktxVersion"
     }
 }
 
@@ -70,5 +71,6 @@ project(":core") {
         api "io.github.libktx:ktx-scene2d:$ktxVersion"
         api "io.github.libktx:ktx-actors:$ktxVersion"
         api "io.github.libktx:ktx-log:$ktxVersion"
+        api "io.github.libktx:ktx-math:$ktxVersion"
     }
 }

@@ -5,6 +5,8 @@ import com.simplektx.game.minigame.action.Action
 import com.simplektx.game.minigame.action.NoAction
 import com.simplektx.game.minigame.action.Stab
 import com.simplektx.game.minigame.action.Swing
+import ktx.math.ImmutableVector2
+import ktx.math.dst
 import kotlin.random.Random
 
 class Enemy : Entity() {
@@ -24,13 +26,13 @@ class Enemy : Entity() {
     }
 
     private fun swing(): Swing {
-        val start = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
-        val end = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
+        val start = ImmutableVector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
+        val end = ImmutableVector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
         return Swing(1, 1, 1000, 10 * start.dst(end).toLong(), start, end)
     }
 
     private fun stab(): Stab {
-        val center = Vector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
+        val center = ImmutableVector2(Random.nextFloat() * 800, Random.nextFloat() * 800)
         return Stab(1, 1, 1000, 1000, center)
     }
 }

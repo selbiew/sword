@@ -6,8 +6,9 @@ import com.simplektx.game.minigame.interaction.Interaction
 import com.simplektx.game.minigame.interaction.NoInteraction
 import com.simplektx.game.minigame.interaction.Parry
 import com.simplektx.game.utils.intersects
+import ktx.math.ImmutableVector2
 
-class Stab(damage: Int, staminaCost: Int, prepTimeMs: Long, executionTimeMs: Long, val center: Vector2)
+class Stab(damage: Int, staminaCost: Int, prepTimeMs: Long, executionTimeMs: Long, val center: ImmutableVector2)
     : Attack(damage, staminaCost, prepTimeMs, executionTimeMs) {
     val endRadius: Int = 20
     val currentRadius: Int get() = (endRadius * executionProgress).toInt()

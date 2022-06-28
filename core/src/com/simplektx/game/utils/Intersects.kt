@@ -5,13 +5,15 @@ import com.simplektx.game.minigame.action.Action
 import com.simplektx.game.minigame.action.Block
 import com.simplektx.game.minigame.action.Stab
 import com.simplektx.game.minigame.action.Swing
+import ktx.math.ImmutableVector2
+import ktx.math.dst
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
 // Given three collinear points p, q, r, the function checks if
 // point q lies on line segment 'pr'
-private fun onSegment(p: Vector2, q: Vector2, r: Vector2): Boolean {
+private fun onSegment(p: ImmutableVector2, q: ImmutableVector2, r: ImmutableVector2): Boolean {
     return (q.x <= max(p.x, r.x)
             && q.x >= min(p.x, r.x)
             && q.y <= max(p.y, r.y)
@@ -23,7 +25,7 @@ private fun onSegment(p: Vector2, q: Vector2, r: Vector2): Boolean {
 // 0 --> p, q and r are collinear
 // 1 --> Clockwise
 // 2 --> Counterclockwise
-private fun orientation(p: Vector2, q: Vector2, r: Vector2): Int {
+private fun orientation(p: ImmutableVector2, q: ImmutableVector2, r: ImmutableVector2): Int {
     // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
     // for details of below formula.
     val v: Float = (q.y - p.y) * (r.x - q.x) -
@@ -63,7 +65,7 @@ fun intersects(swing: Swing, otherSwing: Swing): Boolean {
 
 // https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
 fun intersects(stab: Stab, swing: Swing): Boolean {
-    val f = swing.start.cpy().sub(stab.center.cpy())
+    val f = swing.start - stab.center
     val a = swing.direction.dot(swing.direction)
     val b = 2 * f.dot(swing.direction)
     val c = f.dot(f) - (stab.endRadius * stab.endRadius)
@@ -148,7 +150,7 @@ fun intersects(block: Block, swing: Swing): Boolean {
 }
 
 fun intersects(block: Block, stab: Stab): Boolean {
-    val f = block.start.cpy().sub(stab.center.cpy())
+    val f = block.start - stab.center
     val a = block.direction.dot(block.direction)
     val b = 2 * f.dot(block.direction)
     val c = f.dot(f) - (stab.endRadius * stab.endRadius)
