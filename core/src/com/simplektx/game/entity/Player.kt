@@ -10,6 +10,8 @@ class Player : Entity() {
     override val maxHealth: Int = 10
     override val currentHealth: Int = maxHealth
 
+
+    // TODO: Use callbacks / signals so that prep can be interrupted but not execution
     fun swing(swingInput: CombatInput.SwingInput): Swing {
         executingAction = true
         return Swing(1, 1, 1000, 10 * swingInput.distance.toLong(),

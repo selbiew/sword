@@ -7,7 +7,7 @@ import com.simplektx.game.minigame.action.Action
 import com.simplektx.game.minigame.action.NoAction
 import com.simplektx.game.minigame.interaction.*
 
-class CombatMinigame(private val player: Player, private val enemy: Enemy) {
+class CombatMinigame(val player: Player, val enemy: Enemy) {
     var playerAction: Action = NoAction()
     var enemyAction: Action = enemy.action
     var interactions: MutableList<Interaction> = mutableListOf()
